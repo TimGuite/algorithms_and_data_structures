@@ -79,6 +79,76 @@ struct Stack
     }
 };
 
+template <typename T>
+struct Queue
+{
+    shared_ptr<Node<T>> start = nullptr;
+    shared_ptr<Node<T>> end = nullptr;
+
+    void push(T value)
+    {
+        // If there is no start node, create one and point both start and end to it
+        if (start == nullptr)
+        {
+            start = make_shared<Node<T>>(value, nullptr);
+            end = start;
+        }
+        else
+        {
+            // Otherwise, put a new object at the end and move the end pointer
+            end->ptr = make_shared<Node<T>>(value, nullptr);
+            end = end->ptr;
+        }
+    }
+    optional<T> pop()
+    {
+        if (start != nullptr)
+        {
+            // Get the value from the front
+            T val = start->value;
+            // Put the next pointer from the start into start
+            start = start->ptr;
+            if (start == nullptr)
+            {
+                end = nullptr;
+            }
+            return val;
+        }
+        else
+        {
+            // Return nullopt
+            return {};
+        }
+    }
+
+    int count()
+    {
+        int counter = 0;
+        // Get the pointer at the start
+        auto countPtr = start;
+        // Keep moving forwards until it reaches the start
+        while (countPtr != nullptr)
+        {
+            counter++;
+            countPtr = countPtr->ptr;
+        }
+        return counter;
+    }
+
+    template <typename U>
+    Queue<U> map(function<U(T)> f)
+    {
+        Queue<U> result;
+        auto mapPtr = start;
+        while (mapPtr != nullptr)
+        {
+            result.push(f(mapPtr->value));
+            mapPtr = mapPtr->ptr;
+        }
+        return result;
+    }
+};
+
 int main()
 {
     Stack<string> s1;
@@ -98,4 +168,16 @@ int main()
     cout << s2.pop().value_or(0) << endl;
     cout << s1.pop().value_or("(none)") << endl;
     cout << s2.pop().value_or(0) << endl;
+
+    Queue<string> q1;
+    q1.push("One");
+    q1.push("Two");
+    q1.push("Three");
+
+    cout << "Queue has size of: " << q1.count() << endl;
+
+    cout << q1.pop().value_or("(none)") << endl;
+    cout << q1.pop().value_or("(none)") << endl;
+    cout << q1.pop().value_or("(none)") << endl;
+    cout << q1.pop().value_or("(none)") << endl;
 }
