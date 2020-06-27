@@ -1,3 +1,5 @@
+// Implementation of stack and queue using a simple linked list
+
 #include <functional>
 #include <iostream>
 #include <memory>

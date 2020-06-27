@@ -8,3 +8,4 @@ set(CMAKE_CXX_STANDARD 20)
 
 # add the executable
 add_executable(LinkedList src/LinkedList.cpp)
+add_executable(Array src/Array.cpp)
